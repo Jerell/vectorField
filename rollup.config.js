@@ -5,7 +5,7 @@ const D3_WARNING = /Circular dependency.*d3-interpolate/;
 export default {
   input: "src/app.js",
   output: {
-    file: "bundle.js",
+    file: "src/bundle.js",
     format: "cjs",
   },
   plugins: [
