@@ -11,6 +11,7 @@ function animation() {
     Y = [], // to store current point for each curve
     xb = 1.5,
     yb = 1.3;
+
   //// curve ////
   let N = 50, // 25^2 curves
     // discretize the vfield coords
@@ -20,6 +21,7 @@ function animation() {
     yp = d3.range(N).map(function (i) {
       return yb * (-1 + (i * 2) / N);
     });
+
   // array of starting positions for each curve on a uniform grid
   for (let i = 0; i < N; i++) {
     for (let j = 0; j < N; j++) {
@@ -27,6 +29,7 @@ function animation() {
       X0.push(xp[j]), Y0.push(yp[i]);
     }
   }
+
   // vfield
   function F(x, y) {
     let rho = Math.sqrt(x * x + y * y),
@@ -35,6 +38,7 @@ function animation() {
       b = -gamma * c * r * r + 1;
     return [x * a - b * y, y * a + b * x];
   }
+
   //// frame setup
   let width = window.innerWidth,
     height = window.innerHeight,
@@ -47,7 +51,7 @@ function animation() {
     g = canvas.node().getContext("2d"); // initialize a "canvas" element
   g.fillStyle = "rgba(0, 0, 0, 0.05)"; // for fading curves
   g.lineWidth = 0.7;
-  g.strokeStyle = "#FF8000"; // html color code
+  g.strokeStyle = "#cc33ff"; // html color code
 
   //// mapping from vfield coords to web page coords
   let xMap = d3
@@ -81,9 +85,12 @@ function animation() {
     // to randomize starting ages for each curve
     return Math.round(Math.random() * 100);
   }
+
+  let color = d3.scaleSequential([-1, 1], d3.interpolateViridis);
   // for info on the global canvas operations see
   // http://bucephalus.org/text/CanvasHandbook/CanvasHandbook.html#globalcompositeoperation
   g.globalCompositeOperation = "source-over";
+
   function draw() {
     g.fillRect(0, 0, width, height); // fades all existing curves by a set amount determined by fillStyle (above), which sets opacity using rgba
     for (let i = 0; i < M; i++) {
@@ -92,6 +99,9 @@ function animation() {
       g.beginPath();
       g.moveTo(xMap(X[i]), yMap(Y[i])); // the start point of the path
       g.lineTo(xMap((X[i] += dr[0] * dt)), yMap((Y[i] += dr[1] * dt))); // the end point
+
+      g.strokeStyle = color(Math.abs(dr[0] / dr[1]));
+
       g.stroke(); // final draw command
       if (age[i]++ > MaxAge) {
         // incriment age of each curve, restart if MaxAge is reached

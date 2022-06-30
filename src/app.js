@@ -33,7 +33,7 @@ function animation() {
         .attr("height", height), g = canvas.node().getContext("2d"); // initialize a "canvas" element
     g.fillStyle = "rgba(0, 0, 0, 0.05)"; // for fading curves
     g.lineWidth = 0.7;
-    g.strokeStyle = "#FF8000"; // html color code
+    g.strokeStyle = "#cc33ff"; // html color code
     //// mapping from vfield coords to web page coords
     var xMap = d3
         .scaleLinear()
@@ -63,6 +63,7 @@ function animation() {
         // to randomize starting ages for each curve
         return Math.round(Math.random() * 100);
     }
+    var color = d3.scaleSequential([-1, 1], d3.interpolateViridis);
     // for info on the global canvas operations see
     // http://bucephalus.org/text/CanvasHandbook/CanvasHandbook.html#globalcompositeoperation
     g.globalCompositeOperation = "source-over";
@@ -74,6 +75,7 @@ function animation() {
             g.beginPath();
             g.moveTo(xMap(X[i]), yMap(Y[i])); // the start point of the path
             g.lineTo(xMap((X[i] += dr[0] * dt)), yMap((Y[i] += dr[1] * dt))); // the end point
+            g.strokeStyle = color(Math.abs(dr[0] / dr[1]));
             g.stroke(); // final draw command
             if (age[i]++ > MaxAge) {
                 // incriment age of each curve, restart if MaxAge is reached
